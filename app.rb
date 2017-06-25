@@ -3,7 +3,7 @@
 require 'awesome_print'
 require_relative './bob_chain'
 
-bc = BobChain.new
+bc = BobChain.new('alister')
 
 [
   'Do what thou wilt shall be the whole of the law.',

@@ -1,20 +1,29 @@
 # frozen_string_literal: true
 
+require 'pstore'
 require 'digest'
 require_relative './block'
 
 class BobChain
   class InvalidBlock < StandardError; end
 
-  attr_reader :bobchain
-
-  def initialize
+  def initialize(db_name)
+    @db_name = db_name
     @errors = []
-    @bobchain = [genesis_block]
+    db.transaction do
+      db[:bobchain] = [genesis_block] unless db.fetch(:bobchain, nil)
+      db.commit
+    end
+  end
+
+  def bobchain
+    db.transaction do
+      db[:bobchain]
+    end
   end
 
   def tail
-    @bobchain[-1]
+    bobchain[-1]
   end
 
   def generate_next_block(data)
@@ -26,7 +35,10 @@ class BobChain
 
   def add(new_block)
     raise InvalidBlock, @errors.join(";\n") unless block_valid?(new_block, tail)
-    @bobchain.push(new_block)
+    db.transaction do
+      db[:bobchain].push(new_block)
+      db.commit
+    end
     self
   end
 
@@ -49,5 +61,9 @@ class BobChain
     return false if @errors.any?
 
     true
+  end
+
+  def db
+    @db ||= PStore.new("#{@db_name}.pstore")
   end
 end
