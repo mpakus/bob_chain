@@ -10,4 +10,8 @@ class Block
     @data = data
     @hash = hash.to_s
   end
+
+  def to_json(_opt)
+    { index: @index, prev_hash: @prev_hash, timestamp: @timestamp, data: @data, hash: @hash }.to_s
+  end
 end
