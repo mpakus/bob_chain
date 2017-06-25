@@ -1,0 +1,14 @@
+Metrics/LineLength:
+  Max: 120
+Metrics/BlockLength:
+  ExcludedMethods: ['describe', 'context']
+Documentation:
+    Enabled: false
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - lib/tasks/**/*
+    - db/**/*
+    - config/**/*
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
